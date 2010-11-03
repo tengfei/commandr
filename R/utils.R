@@ -1,6 +1,6 @@
 capitalize <- function(str) {
   if (length(str) && nchar(str))
-      substring(str, 1, 1) <- toupper(substring(str, 1, 1))
+    substring(str, 1, 1) <- toupper(substring(str, 1, 1))
   str
 }
 decapitalize <- function(str) {
@@ -25,3 +25,23 @@ callNextProtocol <- function(...) {
   env <- sys.frame(sys.parent(3))
   do.call("callNextMethod", list(object=quote(object), data, ...), envir = env)
 }
+
+setDataMode <- function(data_mode){
+  bioc <- getOption("BioC")
+  bioc$commandr$pre_data_mode <- bioc$commandr$data_mode
+  bioc$commandr$data_mode <- data_mode 
+  options(BioC=bioc)
+}
+
+lockDataMode <- function(){
+  setDataMode("locked")
+}
+
+unlockDataMode <- function(){
+  setDataMode("none")
+}
+
+restoreDataMode <- function(){
+  setDataMode(getOption("BioC")$commandr$pre_data_mode)
+}
+

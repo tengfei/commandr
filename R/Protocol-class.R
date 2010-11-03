@@ -150,7 +150,8 @@ setProtocol <- function(method, dispname = method, representation = list(),
                   result@pipeline@.Data <- c(pipeline, object)
                   ##names(result@pipeline)[length(names(result@pipeline))] <- name(object)
                 }
-                setData(object,result)
+                if(getOption("BioC")$commandr$data_mode=="memory")
+                  setData(object,result)
                 result
               }, where = where)
     ## set a method with the same formals
@@ -192,3 +193,4 @@ setMethod("setData","character",function(object,data){
 setMethod("setData","Protocol",function(object,data){
   setData(role(StageForProtocol(class(object))),data)
 })
+
