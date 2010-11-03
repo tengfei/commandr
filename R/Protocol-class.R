@@ -88,8 +88,9 @@ setProtocol <- function(method, dispname = method, representation = list(),
   parent <- setdiff(parent, "VIRTUAL")
   method <- decapitalize(method)
 ## resolve ancestors and find stage
-  if (!extends(parent, "Protocol"))
+  if (!extends(parent, "Protocol")){
     parent <- qualifyProtocolName(parent)
+  }
   stage <- StageForProtocol(parent, where)
   if (is.null(stage))
     stop("Failed to derive a stage from parent class: '", parent, '"')
@@ -99,7 +100,7 @@ setProtocol <- function(method, dispname = method, representation = list(),
   if (dequalifyProtocolName(class) == stagename)
     stop("Protocol name conflicts with existing stage name '", stagename, "'")
   contains <- parent
-  if (virtual)
+   if (virtual)
     contains <- c(contains, "VIRTUAL")
   
 ## Transform representation to allow language objects (delayed evaluation)
@@ -109,7 +110,8 @@ setProtocol <- function(method, dispname = method, representation = list(),
       setClassUnion(union, c(cl, "language"), where)
     union
   })
-  
+
+
 ## add function formals to prototype
   if (!missing(fun)) {
     slots <- c(slotNames(parent), names(representation))
@@ -141,7 +143,7 @@ setProtocol <- function(method, dispname = method, representation = list(),
                   do.call(.fun, c(list(.data), nms, list(...)))
                 })
                 result <- as.function(c(slots[formal], expr))()
-                if (!is.null(result)) {           # FIXME: need c.Pipeline()
+                if (!is.null(result)) {
                   pipeline <- if (!is(data, "PipelineData"))
                     NULL
                   else data@pipeline                  

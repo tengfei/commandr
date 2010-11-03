@@ -80,8 +80,7 @@ setMethod("findProtocols", "Pipeline",
             which(sapply(object, is, protocolClass(role, method)))
           })
 
-## FIXME: need [[ method for getting a protocol by name
-## FIXME: need [ method for getting a pipeline with a selected protocol
+
 setMethod("protocol", "Pipeline",
           function(object, role, method = character(), ...)
           {
@@ -100,6 +99,21 @@ setReplaceMethod("protocol", "Pipeline",
                    else object@.Data <- c(object, value)
                    object
                  })
+
+setGeneric("processProto",function(object,...)
+           standardGeneric("processProto"))
+setMethod("processProto","Pipeline",function(object,
+                                                     role="genProfile",
+                                                     method=defaultMethod(role)){
+  protos <- findProtocols(object,role,method)
+  if(!length(protos))
+    NULL
+  else{
+    npps <- object[1:protos[1]]
+    return(npps)
+  }
+})
+
 
 ## perform an operation on a data structure and return the result
 ## methods are defined via setProtocol()
@@ -122,3 +136,43 @@ setMethod("show", "Pipeline", function(object) {
   }
 })
 
+
+setMethod("c","Pipeline",function(x,...,recursive=FALSE){
+  if(recursive)
+    stop("'recursive mode is not supported'")
+  arg <- unlist(list(x,...))
+  do.call('Pipeline',arg)
+})
+
+setMethod("[","Pipeline",
+          function(x,i,j,...,drop=FALSE){
+            if(!missing(j)||length(list(...))>0)
+              stop("invalid subsetting")
+            N <- length(x@.Data)
+            if(min(i)<1 | max(i)>N)
+              stop("Subscript is out of boundary")
+            if(!missing(i)){
+              return(do.call("Pipeline",x@.Data[i]))
+            }
+          })
+
+setReplaceMethod("[","Pipeline",
+                 function(x,i,j,...,value){
+                   if(!missing(j)||length(list(...))>0)
+                     stop("invalid replacing")
+                   N <- length(x@.Data)
+                   if(min(i)<1 | max(i)>N)
+                     stop("Subscript is out of boundary")
+                   if(length(i)>1)
+                     stop('Multiple replacement is not supported yet')
+                   if(!missing(i) & !missing(value)){
+                     res <- x@.Data
+                     res[i] <- value
+                     return(do.call("Pipeline",res))
+                   }
+                 })
+## not supported names yet
+## setMethod("[[","Pipeline",
+##           function(x,i,j,...){
+            
+##           })

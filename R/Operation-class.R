@@ -6,10 +6,10 @@ setClass("Operation",
          contains = "Command")
 
 quoteCommand <- function(do, undo = NULL) {
-  do <- as.function(substitute(do), parent.frame())
+  do <- as.function(list(substitute(do)), parent.frame())
   if (!is.null(undo))
-    undo <- as.function(substitute(undo), parent.frame())
-  new("Operation", fun = fun, undo = undo)
+    undo <- as.function(list(substitute(undo)), parent.frame())
+  new("Operation", do = do, undo = undo)
 }
 
 ## Methods:
@@ -20,7 +20,7 @@ setMethod("eval", "Operation",
                    enclos = if(is.list(envir) || is.pairlist(envir))
                    parent.frame() else baseenv())
           {
-            do()
+            expr@do()
           })
 
 ## - rev() (for undo)
