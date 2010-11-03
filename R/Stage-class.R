@@ -113,16 +113,16 @@ setMethod("defaultMethod", "Stage",
 setMethod("defaultMethod", "character", function(object, ...)
           {
             key <- .defaultMethodKey(object)
-            getOption("BioC")$commandr[[key]]
+            getOption("BioC")$commandr$methods[[key]]
           })
 
 setMethod("defaultMethod", "missing", function(object, ...) {
   args <- list(...)
   bioc <- getOption("BioC")
-  if (is.null(bioc$commandr))
-    bioc$commandr <- list()
+  if (is.null(bioc$commandr$methods))
+    bioc$commandr$methods <- list()
   for (role in names(args)) {
-    bioc$commandr[[.defaultMethodKey(role)]] <- args[[role]]
+    bioc$commandr$methods[[.defaultMethodKey(role)]] <- args[[role]]
   }
   options(BioC = bioc)
 })
@@ -148,3 +148,33 @@ setMethod("protocolClasses", "Stage",
             ##subs <- names(getClass(baseProto)@subclasses)
             protos[!unlist(lapply(protos, isVirtualClass))]
           })
+
+## get stage data
+setGeneric("getData",function(object,...) standardGeneric("getData"))
+
+.getDataKey <- function(value){
+  paste(decapitalize(value),"data",sep=".")
+}
+
+setMethod("getData","character",function(object,...){
+  key <- .getDataKey(object)
+  getOption("BioC")$commandr$stageData[[key]]
+})
+
+setMethod("getData","Stage",
+          function(object) getData(role(object)))
+
+setMethod("getData","missing",function(object,...){
+  args <- list(...)
+  bioc <- getOption("BioC")
+  if(is.null(bioc$commandr$stageData))
+    bioc$commandr$stageData <- list()
+  for(role in names(args)){
+    bioc$commandr$stageData[[.getDataKey(role)]] <- args[[role]]
+  }
+  options(BioC=bioc)
+})
+
+setMethod("getData","Protocol",function(object,...){
+  getData(role(StageForProtocol(object)))
+})
