@@ -100,6 +100,7 @@ setReplaceMethod("protocol", "Pipeline",
                    object
                  })
 
+## try to get Pipelines before certain protocol
 setGeneric("processProto",function(object,...)
            standardGeneric("processProto"))
 setMethod("processProto","Pipeline",function(object,

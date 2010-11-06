@@ -25,6 +25,8 @@ StageForProtocol <- function(name, where = topenv(parent.frame())) {
   else NULL
 }
 
+
+
 ## name of specific method performed by a protocol
 setGeneric("method", function(object, ...) standardGeneric("method"))
 
@@ -150,8 +152,6 @@ setProtocol <- function(method, dispname = method, representation = list(),
                   result@pipeline@.Data <- c(pipeline, object)
                   ##names(result@pipeline)[length(names(result@pipeline))] <- name(object)
                 }
-                if(getOption("BioC")$commandr$data_mode=="memory")
-                  setData(object,result)
                 result
               }, where = where)
     ## set a method with the same formals
@@ -177,20 +177,4 @@ setProtocol <- function(method, dispname = method, representation = list(),
   class
 }
 
-setGeneric("setData",function(object,...) standardGeneric("setData"))
-
-
-setMethod("setData","character",function(object,data){
-  data_mode <- getOption("BioC")$commandr$data_mode
-  nms <- paste(object,'data',sep='.')
-  if(data_mode=="memory"){
-    bioc <- getOption("BioC")
-    bioc$commandr$stageData[[nms]] <- data
-    options(BioC=bioc)
-  }
-})
-
-setMethod("setData","Protocol",function(object,data){
-  setData(role(StageForProtocol(class(object))),data)
-})
 
