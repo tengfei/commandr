@@ -25,10 +25,8 @@ setGeneric("protocol<-", function(object, ..., value)
 setGeneric("pipeline", function(object, ...) standardGeneric("pipeline"))
 
 ## The display name accessor
-setMethod("dispName", "Pipeline", function(object) {
-  if (!length(object@dispName))
-    object@name
-  else object@dispName
+setMethod("displayName", "Pipeline", function(object) {
+  object@displayName
 })
 
 ## name of type to accept as input
