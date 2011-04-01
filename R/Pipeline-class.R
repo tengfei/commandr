@@ -67,7 +67,8 @@ setMethod("pipeline", "Pipeline",
             pipeline <- initialize(object, list())
             if (any(inmatch) && any(outmatch)) {
               pipeline <- object
-              pipeline@.Data <- pipeline[which(inmatch)[1]:tail(which(outmatch),1)]
+              pipeline@.Data <-
+                pipeline[which(inmatch)[1]:tail(which(outmatch),1)]
             }
             pipeline
           })
@@ -80,9 +81,8 @@ setMethod("findProtocols", "Pipeline",
             which(sapply(object, is, protocolClass(role, method)))
           })
 
-
 setMethod("protocol", "Pipeline",
-          function(object, role, method = character(), ...)
+          function(object, role, method = character())
           {
             protos <- findProtocols(object, role, method)
             if (!length(protos))
