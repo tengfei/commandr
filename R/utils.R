@@ -47,3 +47,21 @@ restoreDataMode <- function(){
   setDataMode(getOption("BioC")$commandr$pre_data_mode)
 }
 
+## derived from function of same name in methods package
+.externalCallerEnv <- function (n = 2, nmax = sys.nframe() - n + 1) 
+{
+  if (nmax < 1) 
+    stop("got a negative maximum number of frames to look at")
+  ev <- topenv(parent.frame())
+  thisNamespace <- environment(sys.function())
+  for (back in seq.int(from = -n, length.out = nmax)) {
+    fun <- sys.function(back)
+    if (is(fun, "function") && !is(fun, "genericFunction")) {
+      ev <- topenv(environment(fun))
+      if (!identical(ev, .methodsNamespace) && !identical(ev, thisNamespace) &&
+          !identical(ev, .BaseNamespaceEnv))
+        break
+    } else ev <- .GlobalEnv
+  }
+  ev
+}
