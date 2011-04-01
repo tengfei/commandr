@@ -183,6 +183,8 @@ setProtocol <- function(method, dispname = method, representation = list(),
       do.call("perform", c(list(protocol, object), mc[!slots]))
     })
     setMethod(generic, intype, as.function(c(args, expr)), where = where)
+    if (is.null(defaultMethod(stage)))
+      defaultMethod(stage) <- method
   }
   class
 }
