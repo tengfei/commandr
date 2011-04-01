@@ -45,7 +45,7 @@ setMethod("parameters", "Protocol", function(object) {
 setMethod("show", "Protocol", function(object)
           {
             stage <- stage(object, .GlobalEnv)
-            cat(dispName(stage), " (", dispName(object), ")\n", sep = "")
+            cat(displayName(stage), " (", displayName(object), ")\n", sep = "")
           })
 
 ### FIXME: should happen in setProtocol()
@@ -125,7 +125,7 @@ setProtocol <- function(method, dispname = method, representation = list(),
   prototype <- do.call("prototype", prototype, TRUE)
   setClass(class, representation, prototype, contains, validity, where = where)
   if (!missing(fun))
-    setMethod("dispName", class, function(object) dispname, where = where)
+    setMethod("displayName", class, function(object) dispname, where = where)
   ## remember the 'stage' of the protocol
   ## creates a new instance since stages can be redefined
   ##setMethod("stage", class, function(object) Stage(stagename), where=where)

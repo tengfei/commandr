@@ -52,7 +52,8 @@ setStage <- function(name, dispname = name, intype = "ANY", outtype = intype,
   class <- setClass(qualifyStageName(name), contains = "Stage",
                     where = where)
   # create accessors for 'dispname' and 'inType'
-  setMethod("dispName", class@className, function(object) dispname, where = where)
+  setMethod("displayName", class@className, function(object) dispname,
+            where = where)
   setMethod("inType", class@className, function(object) intype, where = where)
   setMethod("outType", class@className, function(object) outtype, where = where)
   # create the API for performing a method of this stage

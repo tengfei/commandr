@@ -1,17 +1,19 @@
 ### The pipeline is a series of protocols that implement stages
 setClassUnion("OptionalCharacter", c("character", "NULL"))
 
-setClass("Pipeline", representation(dispName = "OptionalCharacter"),
+setClass("Pipeline", representation(displayName = "OptionalCharacter"),
          contains = "list")
 
-## constructor
-Pipeline <- function(..., dispName = NULL) {
+Pipeline <- function(..., displayName = NULL) {
   protos <- list(...)
+  chars <- sapply(protos, is.character)
+  protos[chars] <- lapply(protos[chars], Protocol)
   if (!all(sapply(protos, is, "Protocol")))
     stop("All arguments in '...' must be Protocol instances")
-  if (!is.null(dispName) && (!is.character(dispName) || length(dispName) != 1))
-    stop("'dispName' should be a single character string or NULL")
-  new("Pipeline", protos, dispName = dispName)
+  if (!is.null(displayName) &&
+      (!is.character(displayName) || length(displayName) != 1))
+    stop("'displayName' should be a single character string or NULL")
+  new("Pipeline", protos, displayName = displayName)
 }
 
 ## protocol accessors

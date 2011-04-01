@@ -15,6 +15,6 @@ setGeneric("explore", function(object, protocol, ...)
            standardGeneric("explore"))
 
 ## how an object is identified in a user interface
-setGeneric("dispName", function(object, ...) standardGeneric("dispName"))
+setGeneric("displayName", function(object, ...) standardGeneric("displayName"))
 ## by default, the name of the object
-setMethod("dispName", "ANY", function(object) class(object))
+setMethod("displayName", "ANY", function(object) class(object))
