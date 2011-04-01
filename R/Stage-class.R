@@ -12,18 +12,6 @@ setGeneric("role", function(object, ...) standardGeneric("role"))
 setMethod("role", "Stage",
           function(object) dequalifyStageName(class(object)))
 
-# the factory method - creates a protocol given a method name
-setMethod("protocol", "Stage",
-          function(object, method = defaultMethod(object), ...)
-{
-  protocol <- NULL
-  me <- role(object)
-  class <- protocolClass(me, method)
-  if (extends(class, qualifyProtocolName(me)))
-    protocol <- new(class, ...)
-  protocol
-})
-
 # get an Stage instance
 Stage <- function(role) {
   new(qualifyStageName(role))
