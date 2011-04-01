@@ -100,21 +100,41 @@ setReplaceMethod("protocol", "Pipeline",
                    object
                  })
 
-## try to get Pipelines before certain protocol
-setGeneric("processProto",function(object,...)
-           standardGeneric("processProto"))
-setMethod("processProto","Pipeline",function(object,
-                                                     role="genProfile",
-                                                     method=defaultMethod(role)){
-  protos <- findProtocols(object,role,method)
-  if(!length(protos))
-    NULL
-  else{
-    npps <- object[1:protos[1]]
-    return(npps)
-  }
-})
+## Get Pipelines up to a certain protocol or outtype
+setMethod("head", "Pipeline",
+          function(x, n = 6L, role, method = character(), outtype)
+          {
+            if (!missing(outtype)) {
+              outmatch <- sapply(sapply(x, outType), extends, outtype)
+              if (!any(outmatch))
+                return(NULL)
+              n <- which(outmatch)[1]
+            } else if (!missing(role)) {
+              protos <- findProtocols(x, role, method)
+              if (!length(protos))
+                return(NULL)
+              else n <- protos[1]
+            }
+            initialize(x, callNextMethod(x, n = n))
+          })
 
+## Or starting at a protocol
+setMethod("tail", "Pipeline",
+          function(x, n = 6L, role, method = character(), intype)
+          {
+            if (!missing(intype)) {
+              inmatch <- sapply(sapply(x, inType), extends, intype)
+              if (!any(inmatch))
+                return(NULL)
+              n <- tail(which(inmatch), 1)
+            } else if (!missing(role)) {
+              protos <- findProtocols(x, role, method)
+              if (!length(protos))
+                return(NULL)
+              else n <- tail(protos, 1) - length(x) - 1L
+            }
+            initialize(x, callNextMethod(x, n = n))
+          })
 
 ## perform an operation on a data structure and return the result
 ## methods are defined via setProtocol()
