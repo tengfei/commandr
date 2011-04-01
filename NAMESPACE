@@ -1,8 +1,12 @@
 import(methods)
-## 
-## exportMethods("defaultMethod", "protocolClasses", "role", "protocal")
-## Stage
-## export(setStage)
-exportPattern("^[^\\.]")
+importFrom(utils, head, tail, prompt)
 
-exportClasses(Pipeline, Stage, Protocol, Command, PipelineData)
+export(Operation, OperationQ, Pipeline, Protocol, Stage, callNextProtocol,
+       defaultMethod, "defaultMethod<-", displayName, explore, findProtocols,
+       inType, method, outType, parameters, perform, pipeline, protocol,
+       "protocol<-", role, stage, widget, setStage, setProtocol)
+
+exportMethods("[", "[<-", c, eval, head, rev, tail)
+
+exportClasses(Pipeline, Stage, Protocol, Command, PipelineData, Operation)
+
