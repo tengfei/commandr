@@ -4,14 +4,16 @@ capitalize <- function(str) {
   str
 }
 decapitalize <- function(str) {
-  ## Dont't capitalize ALL CAPS, e.g. abbreviations
-  if (str != toupper(str)) {
-    substring(str, 1, 1) <- tolower(substring(str, 1, 1))
+  ## Don't decapitalize ALL CAPS, e.g. abbreviations
+  if (length(str)) {
+    firstChar <- substring(str, 1, 1)
+    substring(str, 1, 1) <-
+      ifelse(str != toupper(str), tolower(firstChar), firstChar)
   }
   str
 }
 
-findSubclasses <- function(Class, where = topenv(parent.frame())) {
+findSubclasses <- function(Class, where) {
 ### FIXME: apparently @subclasses is not filled in across packages
 ### So we have to brute-force search all class definitions here
   classes <- getClasses(where, TRUE)
