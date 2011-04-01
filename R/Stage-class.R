@@ -44,7 +44,7 @@ qualifyStageName <- function(name) {
 }
 
 # stage registration
-setStage <- function(name, dispname = name, intype, outtype = intype,
+setStage <- function(name, dispname = name, intype = "ANY", outtype = intype,
                      where = topenv(parent.frame()))
 {
   name <- decapitalize(name)
