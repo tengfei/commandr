@@ -71,6 +71,8 @@ Protocol <- function(role, method = defaultMethod(role), ...)
 
 protocolClass <- function(role, method = NULL)
 {
+  if (is(role, "Stage"))
+    role <- role(role)
   name <- paste(decapitalize(role), capitalize(method), sep="")
   qualifyProtocolName(name)
 }
