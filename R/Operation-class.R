@@ -5,10 +5,15 @@ setClass("Operation",
          representation(do = "function", undo = "OptionalFunction"),
          contains = "Command")
 
-quoteCommand <- function(do, undo = NULL) {
+Operation <- function(do, undo = NULL) {
+  new("Operation", do = do, undo = undo)
+}
+
+OperationQ <- function(do, undo) {
   do <- as.function(list(substitute(do)), parent.frame())
-  if (!is.null(undo))
+  if (!missing(undo))
     undo <- as.function(list(substitute(undo)), parent.frame())
+  else undo <- NULL
   new("Operation", do = do, undo = undo)
 }
 
