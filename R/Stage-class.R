@@ -58,7 +58,7 @@ setStage <- function(name, dispname = name, intype = "ANY", outtype = intype,
       proto <- do.call("Protocol", c(list(name, method), args[slots]))
       do.call("perform", c(list(proto, object), args[!slots]))
     }
-  if (is.null(getGeneric(name)))
+  if (is.null(getGeneric(name, where = where)))
     setGeneric(name, .dyngeneric(name), where = where)
   setMethod(name, intype, performFunc, where = where)
   # create a base protocol class for this stage
