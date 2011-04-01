@@ -7,8 +7,10 @@ setClass("Protocol", contains = c("Command", "VIRTUAL"))
 setGeneric("stage", function(object, ...) standardGeneric("stage"))
 ## for the base classes
 setMethod("stage", "Protocol",
-          function(object, where = topenv(parent.frame()))
-          StageForProtocol(class(object), where))
+          function(object, where = .externalCallerEnv()) {
+            force(where)
+            StageForProtocol(class(object), where)
+          })
 
 StageForProtocol <- function(name, where = topenv(parent.frame())) {
   if (!extends(name, "Protocol"))
@@ -31,9 +33,11 @@ StageForProtocol <- function(name, where = topenv(parent.frame())) {
 setGeneric("method", function(object, ...) standardGeneric("method"))
 
 setMethod("method", "Protocol",
-          function(object, where = topenv(parent.frame()))
-          decapitalize(sub(qualifyProtocolName(role(stage(object, where))), "",
-                           class(object))))
+          function(object, where = .externalCallerEnv()) {
+            force(where)
+            role <- role(stage(object, where))
+            decapitalize(sub(qualifyProtocolName(role), "", class(object)))
+          })
 
 setMethod("parameters", "Protocol", function(object) {
   ## simply return slots as a list

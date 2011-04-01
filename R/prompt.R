@@ -28,8 +28,9 @@ promptStageMethods <- function(object, doc)
 
 setMethod("prompt", "Stage",
           function(object, filename, name, protocols = TRUE,
-                   where = topenv(parent.frame()), ...)
+                   where = .externalCallerEnv(), ...)
           {
+            force(where)
             protos <- sapply(protocolClasses(object, where), new)
             methods <- paste(role(object), sapply(protos, method), sep = ".")
             
@@ -140,10 +141,11 @@ setMethod("prompt", "Stage",
           })
 
 setMethod("prompt", "Protocol",
-          function(object, filename, name, where = topenv(parent.frame()), ...)
+          function(object, filename, name, where = .externalCallerEnv(), ...)
           {
             print(filename)
             cl <- class(object)
+            force(where)
             stage <- stage(object, where)
             role <- role(stage)
             method <- method(object, where)
