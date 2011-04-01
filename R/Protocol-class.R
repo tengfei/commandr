@@ -154,10 +154,12 @@ setProtocol <- function(method, dispname = method, representation = list(),
                 })
                 result <- as.function(c(slots[formal], expr))()
                 if (!is.null(result)) {
-                  pipeline <- if (!is(data, "PipelineData"))
-                    NULL
-                  else data@pipeline
-                  result@pipeline@.Data <- c(pipeline, object)
+                  pipeline <- attr(data, "pipeline")
+                  newPipe <- Pipeline(object)
+                  if (is.null(pipeline))
+                    pipeline <- newPipe
+                  else pipeline <- c(pipeline, newPipe)
+                  attr(result, "pipeline") <- pipeline
                   ##names(result@pipeline)[length(names(result@pipeline))] <- name(object)
                 }
                 result
