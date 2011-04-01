@@ -10,8 +10,8 @@ setMethod("prompt", "missing",
 
 promptStageMethods <- function(object, doc)
   {
-    ## add methods for dispName, inType and outType
-    stageValues <- c(dispName = dispName(object),
+    ## add methods for displayName, inType and outType
+    stageValues <- c(displayName = displayName(object),
                      inType = inType(object), outType = outType(object))
     stageMethods <- paste("Returns \"", stageValues, "\".", sep = "")
     fillMethod <- function(i)
@@ -39,7 +39,7 @@ setMethod("prompt", "Stage",
             cp <- promptClass(cl, NA, where = where, ...)
             
             # set title to display name
-            cp$title <- rdmacro("title", paste(dispName(object)))
+            cp$title <- rdmacro("title", paste(displayName(object)))
 
             # set description to something generic
             methodLink <- rdlink(role(object))
@@ -54,7 +54,7 @@ setMethod("prompt", "Stage",
             ofc <- rdmacro("section{Objects from the Class}", ofc)
             cp$`section{Objects from the Class}` <- ofc
             
-            # add methods for dispName, inType and outType
+            # add methods for displayName, inType and outType
             cp <- promptStageMethods(object, cp)
             
             # author - the package developers
@@ -91,7 +91,7 @@ setMethod("prompt", "Stage",
             getter <- paste(role(object), "Proto", sep = "")
             gp <- promptMethods(getter, NA)
             gp$aliases <- c(gp$aliases, rdmacro("alias", getter))
-            title <- paste("Access", dispName(object), "Protocols")
+            title <- paste("Access", displayName(object), "Protocols")
             gp$title <- rdmacro("title", title)
             desc <- paste("Get or replace a", rdlink(role(object)), "protocol.")
             gp$description <- rdmacro("description", desc)
@@ -153,7 +153,7 @@ setMethod("prompt", "Protocol",
             cp <- promptClass(cl, NA, where = where, ...)
             
             # set title to dicsplay name
-            cp$title <- rdmacro("title", dispName(object))
+            cp$title <- rdmacro("title", displayName(object))
 
             # set description to something generic
             met <- paste(role, method, sep = ".")
@@ -174,7 +174,7 @@ setMethod("prompt", "Protocol",
             cp$`section{Slots}`[1] <- paste(cp$`section{Slots}`[1], slotMessage)
             cp$`section{Slots}` <- sub(" ~~ ", "", cp$`section{Slots}`)
             
-            # add the dispName, inType, outType methods
+            # add the displayName, inType, outType methods
             cp <- promptStageMethods(object, cp)
             
             # author - the developers
@@ -197,7 +197,7 @@ setMethod("prompt", "Protocol",
 
             mp <- promptMethods(met, NA, ...)
             mp$aliases <- c(mp$aliases, rdmacro("alias", met))
-            mp$title <- rdmacro("title", dispName(object))
+            mp$title <- rdmacro("title", displayName(object))
             mp$keywords <- mp$keywords[1] # drop dummy keyword
             mp$author <- cp$author
             seealso <- paste(rdlink(role), "which delegates to this function.")
