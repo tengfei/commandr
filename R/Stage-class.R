@@ -127,14 +127,35 @@ setReplaceMethod("defaultMethod", "Stage",
                    object
                  })
 
-setGeneric("protocolClasses",
-           function(object, ...) standardGeneric("protocolClasses"))
-setMethod("protocolClasses", "Stage",
-          function(object, where = topenv(parent.frame()))
+protocolClasses <- function(object, where) {
+  baseProto <- qualifyProtocolName(dequalifyStageName(class(object)))
+  protos <- findSubclasses(baseProto, where)
+  ##subs <- names(getClass(baseProto)@subclasses)
+  protos[!as.logical(unlist(lapply(protos, isVirtualClass)))]
+}
+
+## FIXME: weird name because methods() is already taken and we need
+## 'where' to have a default value in the generic for it to be correct
+setGeneric("methodNames",
+           function(object, ...)
+           standardGeneric("methodNames"))
+
+setMethod("methodNames", "Stage",
+          function(object, where = .externalCallerEnv())
           {
-            baseProto <- qualifyProtocolName(dequalifyStageName(class(object)))
-            protos <- findSubclasses(baseProto, where)
-            ##subs <- names(getClass(baseProto)@subclasses)
-            protos[!unlist(lapply(protos, isVirtualClass))]
+            force(where)
+            classes <- protocolClasses(object, where)
+            decapitalize(sub(role(object), "", dequalifyProtocolName(classes)))
           })
 
+setMethod("show", "Stage", function(object) {
+  cat(displayName(object), " (", inType(object), " -> ", outType(object), ")\n",
+      sep = "")
+  methods <- methodNames(object, .GlobalEnv) # presumably called from session
+  defaultMethod <- defaultMethod(object)
+  if (!is.null(defaultMethod)) {
+    defaultIndex <- which(methods == defaultMethod)
+    methods[defaultIndex] <- paste("*", defaultMethod, sep = "")
+  }
+  cat("methodNames:", paste(methods, collapse = ", "), "\n")
+})
