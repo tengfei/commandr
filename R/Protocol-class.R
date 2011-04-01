@@ -140,7 +140,9 @@ setProtocol <- function(method, dispname = method, representation = list(),
   if (!missing(fun)) {
     intype <- inType(stage)
     .fun <- fun
-    formal <- slotNames(class) %in% names(formals(fun))
+    if ("..." %in% names(formals(fun)))
+      formal <- rep(TRUE, length(slotNames(class)))
+    else formal <- slotNames(class) %in% names(formals(fun))
     setMethod("perform", c(class, intype),
               function(object, data, ...)
               {
