@@ -148,7 +148,7 @@ setProtocol <- function(method, dispname = method, representation = list(),
                 if (!is.null(result)) {
                   pipeline <- if (!is(data, "PipelineData"))
                     NULL
-                  else data@pipeline                  
+                  else data@pipeline
                   result@pipeline@.Data <- c(pipeline, object)
                   ##names(result@pipeline)[length(names(result@pipeline))] <- name(object)
                 }

@@ -12,7 +12,9 @@ myfun2 <- function(a){
 }
 
 com <- quoteCommand(do=myfun1,undo=myfun2)
-eval(com)
+com@do()(1)
+com <- rev(com)
 rev(com)
 
-
+setStage("stage1","stage 1","character")
+setProtocol("convert","con ver t",representation())
