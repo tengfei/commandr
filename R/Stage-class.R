@@ -52,9 +52,9 @@ setStage <- function(name, dispname = name, intype, outtype = intype,
   class <- setClass(qualifyStageName(name), contains = "Stage",
                     where = where)
   # create accessors for 'dispname' and 'inType'
-  setMethod("dispName", class, function(object) dispname, where = where)
-  setMethod("inType", class, function(object) intype, where = where)
-  setMethod("outType", class, function(object) outtype, where = where)
+  setMethod("dispName", class@className, function(object) dispname, where = where)
+  setMethod("inType", class@className, function(object) intype, where = where)
+  setMethod("outType", class@className, function(object) outtype, where = where)
   # create the API for performing a method of this stage
   performFunc <- function(object, method = defaultMethod(name), ...)
     {
@@ -75,8 +75,8 @@ setStage <- function(name, dispname = name, intype, outtype = intype,
   # create a base protocol class for this stage
   protoclass <- setClass(qualifyProtocolName(name),
                          contains = c("Protocol", "VIRTUAL"), where = where)
-  setMethod("inType", protoclass, function(object) intype, where = where)
-  setMethod("outType", protoclass, function(object) outtype, where = where)
+  setMethod("inType", protoclass@className, function(object) intype, where = where)
+  setMethod("outType", protoclass@className, function(object) outtype, where = where)
   # create methods for getting and setting pipeline protocols
   # not sure if this is necessary
   accessor <- paste(name, "Proto", sep="")

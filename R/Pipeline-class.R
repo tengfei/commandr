@@ -1,10 +1,10 @@
 ### The pipeline is a series of protocols that implement stages
-
 setClassUnion("OptionalCharacter", c("character", "NULL"))
 
 setClass("Pipeline", representation(dispName = "OptionalCharacter"),
          contains = "list")
 
+## constructor
 Pipeline <- function(..., dispName = NULL) {
   protos <- list(...)
   if (!all(sapply(protos, is, "Protocol")))

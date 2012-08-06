@@ -89,7 +89,7 @@ setProtocol <- function(method, dispname = method, representation = list(),
   virtual <- missing(fun) || "VIRTUAL" %in% parent
   parent <- setdiff(parent, "VIRTUAL")
   method <- decapitalize(method)
-## resolve ancestors and find stage
+  ## resolve ancestors and find stage
   if (!extends(parent, "Protocol")){
     parent <- qualifyProtocolName(parent)
   }
@@ -97,15 +97,15 @@ setProtocol <- function(method, dispname = method, representation = list(),
   if (is.null(stage))
     stop("Failed to derive a stage from parent class: '", parent, '"')
   stagename <- role(stage)
-## class name directly computed from 'stage' and 'method'
+  ## class name directly computed from 'stage' and 'method'
   class <- protocolClass(stagename, method)
   if (dequalifyProtocolName(class) == stagename)
     stop("Protocol name conflicts with existing stage name '", stagename, "'")
   contains <- parent
-   if (virtual)
+  if (virtual)
     contains <- c(contains, "VIRTUAL")
   
-## Transform representation to allow language objects (delayed evaluation)
+  ## Transform representation to allow language objects (delayed evaluation)
   representation <- lapply(representation, function(cl) {
     union <- paste(cl, "language", sep="OR")
     if (!isClassUnion(union))
@@ -114,14 +114,14 @@ setProtocol <- function(method, dispname = method, representation = list(),
   })
 
 
-## add function formals to prototype
+  ## add function formals to prototype
   if (!missing(fun)) {
     slots <- c(slotNames(parent), names(representation))
     params <- names(formals(fun)) %in% slots
     nonmissing <- params & nchar(sapply(formals(fun), deparse)) > 0
     prototype[names(formals(fun))[nonmissing]] <- formals(fun)[nonmissing]
   }
-## create prototype without forcing argument evaluation
+  ## create prototype without forcing argument evaluation
   prototype <- do.call("prototype", prototype, TRUE)
   setClass(class, representation, prototype, contains, validity, where = where)
   if (!missing(fun))
@@ -167,11 +167,11 @@ setProtocol <- function(method, dispname = method, representation = list(),
     .proto <- list(stagename, method)
     .slots <- slots
     expr <- quote({
-                    mc <- as.list(match.call())[-c(1,2)]
-                    slots <- names(mc) %in% .slots
-                    protocol <- do.call("Protocol", c(.proto, mc[slots]))
-                    do.call("perform", c(list(protocol, object), mc[!slots]))
-                  })
+      mc <- as.list(match.call())[-c(1,2)]
+      slots <- names(mc) %in% .slots
+      protocol <- do.call("Protocol", c(.proto, mc[slots]))
+      do.call("perform", c(list(protocol, object), mc[!slots]))
+    })
     setMethod(generic, intype, as.function(c(args, expr)), where = where)
   }
   class

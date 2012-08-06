@@ -1,3 +1,8 @@
+import(methods)
+## 
+## exportMethods("defaultMethod", "protocolClasses", "role", "protocal")
+## Stage
+## export(setStage)
 exportPattern("^[^\\.]")
 
 exportClasses(Pipeline, Stage, Protocol, Command, PipelineData)
