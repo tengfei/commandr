@@ -74,7 +74,7 @@ setStage <- function(name, dispname = name, intype = "ANY", outtype = intype,
             protocol(object, name, method),
             where = where)
   setMethod(accessor, outtype, function(object, method = character())
-            protocol(object@pipeline, name, method),
+            protocol(attr(object, "pipeline"), name, method),
             where = where)
   replacer <- paste(accessor, "<-", sep="")
   setGeneric(replacer, .dyngeneric(replacer, alist(object=,value=)),
@@ -150,6 +150,7 @@ setMethod("methodNames", "Stage",
 
 setMethod("show", "Stage", function(object) {
   cat(displayName(object), " (", inType(object), " -> ", outType(object), ")\n",
+
       sep = "")
   methods <- methodNames(object, .GlobalEnv) # presumably called from session
   defaultMethod <- defaultMethod(object)
