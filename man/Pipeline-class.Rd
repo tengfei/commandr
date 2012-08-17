@@ -215,5 +215,13 @@ tail(p, intype = "character")
 tail(p, intype = "factor")
 tail(p, role = "DemoCastC2F")
 
+#combination
+p1 <- Pipeline(Protocol("DemoCastN2C"))
+p2 <- Pipeline(Protocol("DemoCastC2F"),
+              Protocol("DemoCastF2L"))
+c(p1 ,p2)
+
+p3 <- Pipeline(Protocol("DemoCastF2L"))
+c(p1, p3)
 
 }
