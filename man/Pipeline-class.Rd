@@ -113,6 +113,10 @@
       \code{role} nor \code{outtype} are specified, the last \code{n}
       elements are returned, as usual.
     }
+    \item{}{\code{Pipeline} extends \code{list}, so, in general, it can
+      be treated as one when it comes to subsetting, etc. For example, \code{[}
+      method works for subsetting of \code{Pipeline} object. 
+    }
   }
 }
 
@@ -146,6 +150,64 @@ perform(p, d)
 p <- Pipeline(Protocol("trim", low = 2),
               Protocol("average", "quantile", probs = 0.75),
               displayName = "Filter and Average")
+perform(p, d)
+
+## accessor
+inType(p)
+outType(p)
+parameters(p)
+protocol(p, "average")
+protocol(p, "average", "quantile")
+
+## subsetting
+# make a new example
+setStage("DemoCastN2C", intype = "numeric", outtype = "character")
+setProtocol("cast", fun = function(x){
+               message("Convert from numeric to character")
+               as.character(x)
+            },
+            parent = "DemoCastN2C")
+
+setStage("DemoCastC2F", intype = "character", outtype = "factor")
+setProtocol("cast", fun = function(x){
+               message("Convert from character to factor")
+               as.factor(x)
+            },
+            parent = "DemoCastC2F")
+
+setStage("DemoCastF2L", intype = "factor", outtype = "list")
+setProtocol("cast", fun = function(x){
+               message("Convert from factor to list")
+               as.list(x)
+            },
+            parent = "DemoCastF2L")
+
+d <- 1:3
+p <- Pipeline(Protocol("DemoCastN2C"),
+              Protocol("DemoCastC2F"),
+              Protocol("DemoCastF2L"))
 p
 perform(p, d)
+# subsetting
+# convert to a factor
+p12 <- p[1:2]
+p12
+perform(p12, d)
+
+#
+p23 <- pipeline(p, intype = "character")
+p23
+perform(p23, as.character(d))
+
+#
+p12 <- head(p, 2)
+p12
+#or
+head(p, outtype = "factor")
+head(p, role = "DemoCastC2F")
+
+tail(p, 2)
+tail(p, intype = "character")
+tail(p, intype = "factor")
+tail(p, role = "DemoCastC2F")
 }
