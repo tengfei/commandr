@@ -158,6 +158,10 @@ outType(p)
 parameters(p)
 protocol(p, "average")
 protocol(p, "average", "quantile")
+displayName(p)
+
+## utils
+findProtocols(p, "average")
 
 ## subsetting
 # make a new example
@@ -210,4 +214,6 @@ tail(p, 2)
 tail(p, intype = "character")
 tail(p, intype = "factor")
 tail(p, role = "DemoCastC2F")
+
+
 }
