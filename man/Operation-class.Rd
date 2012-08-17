@@ -56,4 +56,8 @@
   x <- eval(op)
   rop <- rev(op)
   identical(2, eval(rop))
+
+  active(op)
+  active(op) <- FALSE
+  active(op)
 }
