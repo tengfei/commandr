@@ -217,11 +217,17 @@ tail(p, role = "DemoCastC2F")
 
 #combination
 p1 <- Pipeline(Protocol("DemoCastN2C"))
-p2 <- Pipeline(Protocol("DemoCastC2F"),
-              Protocol("DemoCastF2L"))
-c(p1 ,p2)
-
+p2 <- Pipeline(Protocol("DemoCastC2F"))
 p3 <- Pipeline(Protocol("DemoCastF2L"))
-c(p1, p3)
+c(p1 ,p2)
+p[2] <- p2
+p
 
+
+\dontrun{
+## won't work, because the outtype doesn't match the intype.
+c(p1, p3, p2)
+p[c(1, 3)]
+p[2] <- p3
+}
 }
