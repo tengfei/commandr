@@ -6,7 +6,7 @@ export(Operation, OperationQ, Pipeline, Protocol, Stage, callNextProtocol,
        inType, method, outType, parameters, perform, pipeline, protocol,
        "protocol<-", role, stage, widget, setStage, setProtocol)
 
-exportMethods("[", "[<-", c, eval, head, rev, tail)
+exportMethods("[", "[<-", c, eval, head, rev, tail, active, "active<-")
 
 exportClasses(Pipeline, Stage, Protocol, Command, PipelineData, Operation)
 
