@@ -164,11 +164,13 @@ setMethod("show", "Pipeline", function(object) {
   itype <- sapply(x, inType)
   otype <- sapply(x, outType)
   N <- length(itype)
-  idx <- otype[1:(N-1)] == itype[2:N]
-  idx <- which(!idx)
-  if(!all(otype[1:(N-1)] == itype[2:N])){
-    msg <- "character()"
-    for(i in idx){
+  idx <- sapply(1:(N-1), function(i){
+    extends(otype[i], itype[i+1])
+  })
+  id <- which(!idx)
+  if(length(id)){
+    msg <- character()
+    for(i in id){
       msg <- c(msg, paste0("Pipeline ", i, " (outtype): ", otype[i], 
                           "' doesn't match Pipeline ", i +1, " (intype): ",
                            itype[i + 1]))
