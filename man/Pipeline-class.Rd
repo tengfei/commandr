@@ -221,8 +221,31 @@ p2 <- Pipeline(Protocol("DemoCastC2F"))
 p3 <- Pipeline(Protocol("DemoCastF2L"))
 c(p1 ,p2)
 p[2] <- p2
+
+setClass("ExChar", contains = "character")
+
+setStage("DemoCastC2FV2", intype = "ExChar", outtype = "factor")
+setProtocol("cast", fun = function(x){
+               as.factor(x)
+            },
+            parent = "DemoCastC2FV2")
+p4 <- Pipeline(Protocol("DemoCastC2FV2"))
+
+\dontrun{
+## doesn't work, input 'charcter' is super class of output 'ExChar'.
+p[2] <- p4
+}
 p
 
+## as a subclass, works.
+setStage("DemoCastN2CV2", intype = "numeric", outtype = "ExChar")
+setProtocol("cast", fun = function(x){
+               new("ExChar", as.character(x))
+            },
+            parent = "DemoCastN2CV2")
+p5 <- Pipeline(Protocol("DemoCastN2CV2"))
+p[1] <- p5
+p
 
 \dontrun{
 ## won't work, because the outtype doesn't match the intype.
