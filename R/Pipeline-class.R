@@ -158,6 +158,31 @@ setMethod("show", "Pipeline", function(object) {
 })
 
 ## NOTE: for all primitives, callNextMethod() will return a plain list
+## need validation and consider inheritance
+.valid.IOtype <- function(x){
+  if(length(x) > 1){
+  itype <- sapply(x, inType)
+  otype <- sapply(x, outType)
+  N <- length(itype)
+  idx <- otype[1:(N-1)] == itype[2:N]
+  idx <- which(!idx)
+  if(!all(otype[1:(N-1)] == itype[2:N])){
+    msg <- "character()"
+    for(i in idx){
+      msg <- c(msg, paste0("Pipeline ", i, " (outtype): ", otype[i], 
+                          "' doesn't match Pipeline ", i +1, " (intype): ",
+                           itype[i + 1]))
+    }
+    return(msg)
+  }else{
+    return(TRUE)
+  }}else{
+    return(TRUE)
+  }
+}
+
+
+setValidity("Pipeline", .valid.IOtype)
 
 setMethod("c", "Pipeline", function(x, ..., recursive = FALSE) {
   initialize(x, callNextMethod())
@@ -170,5 +195,9 @@ setMethod("[", "Pipeline",
 
 setReplaceMethod("[", "Pipeline",
                  function(x, i, j, ..., value) {
-                   initialize(x, callNextMethod())
+                   ## FIXME: commented code doesn't work properly
+                  ## initialize(x, callNextMethod())
+                   x@.Data[i] <- value
+                   validObject(x)
+                   x
                  })
