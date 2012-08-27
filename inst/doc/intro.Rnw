@@ -31,11 +31,255 @@
 \date{\today}
 
 \begin{document}
-
 \maketitle
-
+\tableofcontents
 <<options,echo=FALSE>>=
 options(width=72)
 @
+
+\section{Introduction}
+\textit{Command} pattern is a design pattern used in object-oriented
+programming, in this design, an object encapsulate commands and all other
+information needed for a later method call. \textit{Command} pattern based
+examples include analysis pipeline, parallel processing, GUI action or
+do/undo. 
+
+A typical command pattern including some key features
+\begin{itemize}
+\item \textit{Command} declare an interface for performing/executing operations.
+\item \textit{ConcreteCoommand} implements the \textit{Command} interface and
+  its own concrete execute method, invoking operations on \textit{Receiver}. 
+\item \textit{Client} creates \textit{ConcreteCommand} object and sets the receiver.
+\item \textit{Invoker}  decides the time a method is called, ask command to
+  perform a request.
+\item \textit{Receiver} contains methods and knows how to perform operations.
+\end{itemize}
+
+\commandr{} is a \R{} package which use S4 representation to implement
+\textit{Command} pattern in \R{}. In this package, we follow the essential
+design of \textit{Command} pattern to implemented a flexible analytical pipeline
+which including following components.
+\begin{itemize}
+\item Top level virtual class \Rclass{Command}. 
+\item Class \Rclass{Pipeline} is a subclass of class \Rclass{Command}, and a
+  very important concept in this package. A \Rclass{Pipeline} is composed of a
+  sequence of \Rclass{Protocols}. 
+\item A \Rclass{PipelineData} is also a virtual class, just represent a
+  container for a dataset and an attached pipeline which described how this
+  object generated from a sequence of protocols. For this implementation, it's
+  equally applied to any data set have a slot or attribute called 'pipeline'.
+\item A \Rclass{Stage} is an abstract step in a pipeline, represents a role to
+  be played by protocols in a pipeline, each stage transforms one data in a
+  particular way, multiple transformation could be defined in different
+  \Rclass{Protocols} for each \Rclass{Stage}. Users could define new types of
+  stages with method \Rmethod{setStage}. When a stage is set, specific input
+  type or output type for this stage could be specified. So that a chained
+  \Rclass{Pipeline} could be validated which check the input/output data
+  type. In this way, the development could fairly independent as long as we
+  conform to data types for input/output, without worrying about transformation
+  details.
+\item A \Rclass{Protocol}(method) object performs a particular \Rclass{Stage},
+  and it's a concrete step in a pipeline.  Users could set different
+  \Rclass{Protocol}s by using method \Rmethod{setProtocol}.
+\end{itemize}
+
+So as described above, a pipeline is composed of many \Rclass{Stage}s (steps)
+and each stage coould implement as many \Rclass{Protocols}(methods) as
+possible. So you can define (or chain) your pipeline with a sequence of
+different protocols. 
+
+The description in this section may be too abstract to understand the usage
+easily, so let's go through a very simple example in the following section.
+
+\section{Example pipelines}
+In this section, let's try a simple case, even though, once you get familiar
+yourself with the usage, it could be extended to more complicated real-world
+cases. For example, a complicated GC/MS processing pipeline(chroamtoplots) has
+been successfully built based on implementation of this package. You could
+explore the data by forming different pipeline and compare the methods you
+implemented.
+
+Back to our mini-example, let's first set some goals about this pipeline before
+we move on.
+\begin{itemize}
+\item \textbf{Goal}: Processing a vector which may contains numeric values,
+  missing value(NA), remove or replace some missing values and compute averaged
+  summary on the processed data.
+\item \textbf{Stages}:  
+  \begin{itemize}
+  \item \textbf{Stage 1}: Remove missing value.
+    \begin{itemize}
+    \item \textbf{Protocol 1}: simply remove the missing value.
+    \item \textbf{Protocol 2}: replace missing value with an arbitrary value, by
+      default 0.      
+    \item \textbf{Protocol 3}: remove missing value and get numeric value only
+      from an arbitrary range.
+    \end{itemize}
+   \item \textbf{Stage 2}: Perform statistics computation(average) on processed data.
+     \begin{itemize}
+     \item \textbf{Protocol 1}: compute mean.
+     \item \textbf{Protocol 2}: compute median.
+     \end{itemize}
+  \end{itemize}
+\item \textbf{Form different pipline}  
+\end{itemize}
+
+This pipeline is implemented in the following code trunk.
+@ 
+<<example-mini>>=
+library(commandr)
+
+## let's name the first stage 'trim' and specify input types 
+setStage("trim", intype = "numeric")
+## a class called 'StageTrim' is defined automatically
+## then we implemnted protocol 1, 2, 3  for this stage
+setProtocol("remove", fun = function(x){x[!is.na(x)]}, parent = "trim")
+setProtocol("replace", representation = list(val = "numeric"),
+            fun = function(x, val = 0){
+              x[is.na(x)] <- val
+              x
+}, parent = "trim")
+setProtocol("range", representation = list(low = "numeric", high = "numeric"), 
+            fun = function(x, low = 0, high = Inf) x[x >= low & x <= high & !is.na(x)],
+            parent = "trim")
+
+## let's name the second stage 'average' and specify input types 
+setStage("average", intype = "numeric")
+## implement protocol 1 and 2 for stage 1
+setProtocol("mean", fun = mean, parent = "average")
+setProtocol("quantile", representation = list(probs = "numeric"),
+            fun = quantile, parent = "average")
+
+d <- c(1, 2, 3, NA,  5, 6, 7)
+
+## First pipepine: 1. remove missing value 2. compuate mean
+## by default, use default protocol for each stage
+p <- Pipeline("trim", "average")
+perform(p, d)
+
+## Second pipepine: 1. replcae missing value with 100. 2. compuate mean
+## make another pipeline easily
+p <- Pipeline(Protocol("trim", "replace", val = 100), 
+              "average")
+
+perform(p, d)
+
+## Third pipepine: 1. remove missing value and get value above 2. 2. compuate quantile
+p <- Pipeline(Protocol("trim", "range", low = 2),
+              Protocol("average", "quantile", probs = 0.75),
+              displayName = "Filter and Average")
+perform(p, d)
+@ %def 
+
+Now you basically get an idea about how to form pipelines easily and flexibly
+with defined protocols. So basically, you need to define stages for your
+pipeline, and then implement as many protocols as you want for each stage. Then
+construct your pipeline by using constructor \Rmethod{Pipeline}, and pass
+protocols in the right order. Please pay attention to that
+\begin{itemize}
+\item The default stage protocol method is the one first defined for the stage.
+\item When use method \Rmethod{Protocol}, make sure they try to use default
+  protocol first unless you pass the protocol name as second argument.
+\end{itemize}
+
+Some accessor are provided for object \Robject{Pipeline}.
+@ 
+<<pipe-accessor>>=
+## accessor
+inType(p)
+outType(p)
+parameters(p)
+protocol(p, "average")
+displayName(p)
+## find a protocol via protocol name
+findProtocols(p, "average")
+@ %def 
+
+It's very \textbf{important} to keep in mind that a pipline require your
+input/output data type match each other in the sequence of protocols. So when
+define your protocol for each stage, make sure you follow rules made in the
+stage definition.
+
+\Robject{Pipeline} is essentially a \Rclass{list}, so you can use typical method
+to subset/re-order pipeline or insert a protocol. But again, keep in mind, an
+validation step for data input type and output type is always performed when do
+so. More subseting method are defined via \Rfunction{tail,head}, in a slightly
+different way which you specify a specific input type or output type to subset
+the pipeline. More information coudl be find under the manual for function
+\Rfunction{Pipeline}(run \Rcode{help('Pipeline')}). Or just get an idea about it
+by run through following examples.
+
+\begin{itemize}
+\item \textbf{Goal}: We cast a numeric value to character, then to factor, and
+  finally to a list.
+\end{itemize}
+
+@ 
+<<pipe-coerce>>=
+# make a new example
+setStage("DemoCastN2C", intype = "numeric", outtype = "character")
+setProtocol("cast", fun = function(x){
+               message("Convert from numeric to character")
+               as.character(x)
+            },
+            parent = "DemoCastN2C")
+
+setStage("DemoCastC2F", intype = "character", outtype = "factor")
+setProtocol("cast", fun = function(x){
+               message("Convert from character to factor")
+               as.factor(x)
+            },
+            parent = "DemoCastC2F")
+
+setStage("DemoCastF2L", intype = "factor", outtype = "list")
+setProtocol("cast", fun = function(x){
+               message("Convert from factor to list")
+               as.list(x)
+            },
+            parent = "DemoCastF2L")
+
+d <- 1:3
+p <- Pipeline(Protocol("DemoCastN2C"),
+              Protocol("DemoCastC2F"),
+              Protocol("DemoCastF2L"))
+p
+perform(p, d)
+# subsetting
+# convert to a factor
+p12 <- p[1:2]
+p12
+perform(p12, d)
+
+#
+p23 <- pipeline(p, intype = "character")
+p23
+perform(p23, as.character(d))
+
+#
+p12 <- head(p, 2)
+p12
+#or
+head(p, outtype = "factor")
+head(p, role = "DemoCastC2F")
+
+tail(p, 2)
+tail(p, intype = "character")
+tail(p, intype = "factor")
+tail(p, role = "DemoCastC2F")
+
+#combination
+p1 <- Pipeline(Protocol("DemoCastN2C"))
+p2 <- Pipeline(Protocol("DemoCastC2F"))
+p3 <- Pipeline(Protocol("DemoCastF2L"))
+c(p1 ,p2)
+p[2] <- p2
+@ %def 
+
+\section{sessionInfo}
+@ 
+<<sessionInfo>>=
+sessionInfo()
+@ %def 
+
 
 \end{document}
