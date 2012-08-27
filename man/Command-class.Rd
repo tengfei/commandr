@@ -9,6 +9,12 @@
 
 \alias{widget}
 
+\alias{active}
+\alias{active,Command-method}
+
+\alias{active<-}
+\alias{active<-,Command-method}
+
 \title{Virtual Command Class}
 
 \description{
