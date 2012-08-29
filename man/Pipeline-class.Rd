@@ -229,6 +229,7 @@ setProtocol("cast", fun = function(x){
                as.factor(x)
             },
             parent = "DemoCastC2FV2")
+
 p4 <- Pipeline(Protocol("DemoCastC2FV2"))
 
 \dontrun{

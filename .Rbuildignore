@@ -1,8 +1,8 @@
 .gitignore
 .Rhistory
-*.aux
-*.log
-*.out
-*.pdf
-*.tex
-*.toc
+./inst/doc/*.aux
+./inst/doc/*.log
+./inst/doc/*.out
+./inst/doc/*.pdf
+./inst/doc/*.tex
+./inst/doc/*.toc
