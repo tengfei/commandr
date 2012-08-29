@@ -1,6 +1,6 @@
 Package: commandr
 Title: Command pattern in R
-Version: 0.2.0
+Version: 0.9.2
 Author: Michael Lawrence
 Depends: methods
 Imports: methods, utils
@@ -11,5 +11,5 @@ Description: An S4 representation of the Command design pattern. The
   a formal S4 class. Commands may be grouped and consecutively executed
   using the Pipeline class. Example use cases include logging, do/undo,
   analysis pipelines, GUI actions, parallel processing, etc.
-Maintainer: Michael Lawrence <michafla@gene.com>
+Maintainer: Michael Lawrence <michafla@gene.com>, Tengfei Yin <yintengfei@gmail.com>
 License: Artistic-2.0
