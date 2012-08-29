@@ -1,0 +1,8 @@
+.gitignore
+.Rhistory
+*.aux
+*.log
+*.out
+*.pdf
+*.tex
+*.toc
