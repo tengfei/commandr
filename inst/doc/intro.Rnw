@@ -60,10 +60,15 @@ A typical command pattern including some key features
 design of \textit{Command} pattern to implemented a flexible analytical pipeline
 which including following components.
 \begin{itemize}
-\item Top level virtual class \Rclass{Command}. 
+\item Top level virtual class \Rclass{Command}.
 \item Class \Rclass{Pipeline} is a subclass of class \Rclass{Command}, and a
   very important concept in this package. A \Rclass{Pipeline} is composed of a
-  sequence of \Rclass{Protocols}. 
+  sequence of \Rclass{Protocols}. A \Robject{Pipeline} object provides
+  \textbf{Command} interface which has a \Rfunction{perform} method, it is also
+  similar to \textit{invoker} in \textit{Command} pattern, accept different
+  \textit{Command}(the \Robject{Protocol}) in queued order. The
+  \Rfunction{Pipeline} constructor is more like a \textit{client} in
+  \textit{Command} pattern. 
 \item A \Rclass{PipelineData} is also a virtual class, just represent a
   container for a dataset and an attached pipeline which described how this
   object generated from a sequence of protocols. For this implementation, it's
@@ -80,7 +85,9 @@ which including following components.
   details.
 \item A \Rclass{Protocol}(method) object performs a particular \Rclass{Stage},
   and it's a concrete step in a pipeline.  Users could set different
-  \Rclass{Protocol}s by using method \Rmethod{setProtocol}.
+  \Rclass{Protocol}s by using method \Rmethod{setProtocol}. A \Rclass{Protocol}
+  object is similar to \textit{receiver} in \textit{Command} pattern, which
+  implement method and parameters as \textit{ConcreteCommand} method.
 \end{itemize}
 
 So as described above, a pipeline is composed of many \Rclass{Stage}s (steps)
