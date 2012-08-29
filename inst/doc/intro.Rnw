@@ -63,16 +63,16 @@ which including following components.
 \item Top level virtual class \Rclass{Command}.
 \item Class \Rclass{Pipeline} is a subclass of class \Rclass{Command}, and a
   very important concept in this package. A \Rclass{Pipeline} is composed of a
-  sequence of \Rclass{Protocols}. A \Robject{Pipeline} object provides
-  \textbf{Command} interface which has a \Rfunction{perform} method, it is also
-  similar to \textit{invoker} in \textit{Command} pattern, accept different
-  \textit{Command}(the \Robject{Protocol}) in queued order. The
-  \Rfunction{Pipeline} constructor is more like a \textit{client} in
-  \textit{Command} pattern. 
+  sequence of \Rclass{Protocols}. A \Robject{Pipeline} object is similar to
+  \textit{CommandManager} in \textit{Command} pattern, accept different
+  \textit{Command}(the \Robject{Protocol}) in queued order. The \textit{client}
+  in \textit{Command} pattern would be \R{} user either through command line or
+  a GUI.
 \item A \Rclass{PipelineData} is also a virtual class, just represent a
   container for a dataset and an attached pipeline which described how this
   object generated from a sequence of protocols. For this implementation, it's
-  equally applied to any data set have a slot or attribute called 'pipeline'.
+  equally applied to any data set have a slot or attribute called 'pipeline'. A
+  \Robject{PipelineData} is the \textit{receiver} in \textit{Command} pattern.
 \item A \Rclass{Stage} is an abstract step in a pipeline, represents a role to
   be played by protocols in a pipeline, each stage transforms one data in a
   particular way, multiple transformation could be defined in different
@@ -86,8 +86,7 @@ which including following components.
 \item A \Rclass{Protocol}(method) object performs a particular \Rclass{Stage},
   and it's a concrete step in a pipeline.  Users could set different
   \Rclass{Protocol}s by using method \Rmethod{setProtocol}. A \Rclass{Protocol}
-  object is similar to \textit{receiver} in \textit{Command} pattern, which
-  implement method and parameters as \textit{ConcreteCommand} method.
+  implementation would be \textit{ConcreteCommand} in \textit{Command} pattern.
 \end{itemize}
 
 So as described above, a pipeline is composed of many \Rclass{Stage}s (steps)
@@ -281,7 +280,6 @@ p3 <- Pipeline(Protocol("DemoCastF2L"))
 c(p1 ,p2)
 p[2] <- p2
 @ %def 
-
 \section{sessionInfo}
 @ 
 <<sessionInfo>>=
