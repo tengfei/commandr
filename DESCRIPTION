@@ -11,5 +11,5 @@ Description: An S4 representation of the Command design pattern. The
   a formal S4 class. Commands may be grouped and consecutively executed
   using the Pipeline class. Example use cases include logging, do/undo,
   analysis pipelines, GUI actions, parallel processing, etc.
-Maintainer: Michael Lawrence <michafla@gene.com>, Tengfei Yin <yintengfei@gmail.com>
+Maintainer: Tengfei Yin <yintengfei@gmail.com>
 License: Artistic-2.0

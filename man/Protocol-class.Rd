@@ -21,6 +21,7 @@
 
 % other
 \alias{callNextProtocol}
+\alias{protocolClass}
 
 \title{Protocol: Concrete Step in a Pipeline}
 
