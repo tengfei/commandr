@@ -4,7 +4,7 @@ importFrom(utils, head, tail, prompt)
 export(Operation, OperationQ, Pipeline, Protocol, Stage, callNextProtocol,
        defaultMethod, "defaultMethod<-", displayName, explore, findProtocols,
        inType, method, outType, parameters, perform, pipeline, protocol,
-       "protocol<-", role, stage, setStage, setProtocol)
+       "protocol<-", role, stage, setStage, setProtocol, protocolClass)
 
 exportMethods("[", "[<-", c, eval, head, rev, tail)
 
