@@ -1,6 +1,6 @@
 Package: commandr
 Title: Command pattern in R
-Version: 0.9.3
+Version: 0.9.5
 Author: Michael Lawrence
 Depends: methods
 Imports: methods, utils
