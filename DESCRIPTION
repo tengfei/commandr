@@ -1,9 +1,9 @@
 Package: commandr
 Title: Command pattern in R
-Version: 0.9.5
+Version: 1.0.0
 Author: Michael Lawrence
 Depends: methods
-Imports: methods, utils
+Imports: utils
 Description: An S4 representation of the Command design pattern. The
   Operation class is a simple implementation using closures and supports
   forward and reverse (undo) evaluation. The more complicated Protocol
